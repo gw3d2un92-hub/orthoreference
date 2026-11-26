@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#102b46">
 <title>OrthoReference</title>
-
+<link rel="manifest" href="./manifest.json">
 <style>
 * { box-sizing: border-box; }
 
@@ -440,6 +440,14 @@ function goHome() {
 
 render(topics);
 </script>
-
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./service-worker.js")
+      .then(() => console.log("Offline mode enabled"))
+      .catch(error => console.error("SW error:", error));
+  });
+}
+</script>
 </body>
 </html>
