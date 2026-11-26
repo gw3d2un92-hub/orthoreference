@@ -1,0 +1,445 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#102b46">
+<title>OrthoReference</title>
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f3f6fa;
+  color: #172b40;
+}
+
+header {
+  background: #102b46;
+  color: white;
+  padding: 22px 18px;
+}
+
+header h1 { margin: 0; font-size: 25px; }
+header p { color: #bdd2e5; margin-bottom: 0; }
+
+main {
+  max-width: 850px;
+  margin: auto;
+  padding: 18px;
+}
+
+.search {
+  width: 100%;
+  padding: 15px;
+  border: 1px solid #ccd6e1;
+  border-radius: 12px;
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+h2 { font-size: 19px; }
+
+.categories {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.category {
+  background: white;
+  border: 1px solid #e0e7ef;
+  border-radius: 12px;
+  padding: 18px 12px;
+  cursor: pointer;
+  text-align: left;
+  color: #172b40;
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.category span {
+  display: block;
+  font-size: 25px;
+  margin-bottom: 10px;
+}
+
+.category:active { background: #e6f1fb; }
+
+.topic {
+  background: white;
+  border-radius: 12px;
+  padding: 16px;
+  margin: 10px 0;
+  cursor: pointer;
+  border: 1px solid #e0e7ef;
+}
+
+.topic h3 { margin: 0 0 6px; }
+.topic p { margin: 0; color: #68798b; }
+
+button {
+  cursor: pointer;
+}
+
+.back {
+  background: #e2ebf4;
+  border: 0;
+  border-radius: 8px;
+  padding: 10px 15px;
+  margin-bottom: 15px;
+}
+
+.bookmark {
+  background: #e4f0fa;
+  color: #12558b;
+  padding: 10px 14px;
+  border: 0;
+  border-radius: 8px;
+}
+
+.content {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  line-height: 1.7;
+}
+
+nav {
+  position: sticky;
+  bottom: 0;
+  background: white;
+  display: flex;
+  justify-content: space-around;
+  padding: 14px 5px;
+  border-top: 1px solid #ddd;
+}
+
+nav button {
+  border: 0;
+  background: transparent;
+  color: #31516e;
+  font-size: 13px;
+}
+
+.hidden { display: none; }
+
+footer {
+  text-align: center;
+  padding: 20px;
+  color: #718096;
+  font-size: 12px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>🦴 OrthoReference</h1>
+  <p>Your Orthopaedic Clinical Reference</p>
+</header>
+
+<main>
+
+<section id="home">
+  <input
+    class="search"
+    id="search"
+    placeholder="🔍 Search orthopaedic topics..."
+    oninput="searchTopics()"
+  >
+
+  <div id="categories">
+    <h2>Explore Orthopaedics</h2>
+
+    <div class="categories">
+      <button class="category" onclick="showCategory('Trauma')">
+        <span>🦴</span>Trauma
+      </button>
+      <button class="category" onclick="showCategory('Sports')">
+        <span>🏃</span>Sports Medicine
+      </button>
+      <button class="category" onclick="showCategory('Spine')">
+        <span>🩻</span>Spine
+      </button>
+      <button class="category" onclick="showCategory('Pediatrics')">
+        <span>👶</span>Pediatrics
+      </button>
+      <button class="category" onclick="showCategory('Anatomy')">
+        <span>🦵</span>Anatomy
+      </button>
+      <button class="category" onclick="showCategory('Arthroplasty')">
+        <span>🦿</span>Arthroplasty
+      </button>
+    </div>
+  </div>
+
+  <h2 id="resultTitle">Sample Topics</h2>
+  <div id="results"></div>
+</section>
+
+<section id="reader" class="hidden">
+  <button class="back" onclick="goHome()">← Back</button>
+  <div class="content" id="article"></div>
+</section>
+
+<section id="saved" class="hidden">
+  <h2>⭐ Bookmarks</h2>
+  <div id="savedTopics"></div>
+  <button class="back" onclick="goHome()">← Home</button>
+</section>
+
+</main>
+
+<nav>
+  <button onclick="goHome()">🏠 Home</button>
+  <button onclick="showBookmarks()">⭐ Saved</button>
+</nav>
+
+<footer>
+  OrthoReference | Personal learning reference
+  <br>Educational content – verify clinical decisions independently.
+</footer>
+
+<script>
+const topics = [
+  {
+    title: "Tibial Plateau Fractures",
+    category: "Trauma",
+    description: "Fracture classification and management.",
+    content: "Tibial Plateau Fractures",
+    sections: [
+      "Introduction",
+      "Anatomy",
+      "Mechanism of injury",
+      "Clinical evaluation",
+      "Imaging",
+      "Classification: Schatzker",
+      "Management",
+      "Complications"
+    ]
+  },
+  {
+    title: "Femoral Neck Fractures",
+    category: "Trauma",
+    description: "Classification and treatment principles.",
+    content: "Femoral Neck Fractures",
+    sections: [
+      "Introduction",
+      "Blood supply",
+      "Clinical examination",
+      "Imaging",
+      "Garden classification",
+      "Treatment options",
+      "Complications"
+    ]
+  },
+  {
+    title: "ACL Injury",
+    category: "Sports",
+    description: "Diagnosis and management of ACL injuries.",
+    content: "Anterior Cruciate Ligament Injury",
+    sections: [
+      "Anatomy",
+      "Mechanism of injury",
+      "Clinical examination",
+      "Lachman test",
+      "Imaging",
+      "Treatment",
+      "Rehabilitation"
+    ]
+  },
+  {
+    title: "Lumbar Disc Herniation",
+    category: "Spine",
+    description: "Clinical presentation and management.",
+    content: "Lumbar Disc Herniation",
+    sections: [
+      "Anatomy",
+      "Pathophysiology",
+      "Clinical features",
+      "Neurological examination",
+      "MRI",
+      "Treatment"
+    ]
+  },
+  {
+    title: "Developmental Dysplasia of the Hip",
+    category: "Pediatrics",
+    description: "Evaluation and treatment in children.",
+    content: "Developmental Dysplasia of the Hip",
+    sections: [
+      "Definition",
+      "Risk factors",
+      "Examination",
+      "Imaging",
+      "Classification",
+      "Treatment"
+    ]
+  },
+  {
+    title: "Knee Joint Anatomy",
+    category: "Anatomy",
+    description: "Bones, ligaments and joint structures.",
+    content: "Knee Joint Anatomy",
+    sections: [
+      "Bones",
+      "Ligaments",
+      "Menisci",
+      "Muscles",
+      "Neurovascular structures"
+    ]
+  },
+  {
+    title: "Total Knee Arthroplasty",
+    category: "Arthroplasty",
+    description: "Principles of knee replacement.",
+    content: "Total Knee Arthroplasty",
+    sections: [
+      "Indications",
+      "Preoperative planning",
+      "Surgical principles",
+      "Implants",
+      "Complications"
+    ]
+  }
+];
+
+let bookmarks = [];
+
+function render(list) {
+  const results = document.getElementById("results");
+  results.innerHTML = "";
+
+  if (!list.length) {
+    results.innerHTML = "<p>No topics found.</p>";
+    return;
+  }
+
+  list.forEach(topic => {
+    const div = document.createElement("div");
+    div.className = "topic";
+
+    const title = document.createElement("h3");
+    title.textContent = topic.title;
+
+    const description = document.createElement("p");
+    description.textContent = topic.description;
+
+    div.append(title, description);
+    div.onclick = () => openTopic(topic.title);
+
+    results.appendChild(div);
+  });
+}
+
+function openTopic(title) {
+  const topic = topics.find(t => t.title === title);
+  if (!topic) return;
+
+  document.getElementById("home").classList.add("hidden");
+  document.getElementById("saved").classList.add("hidden");
+  document.getElementById("reader").classList.remove("hidden");
+
+  const article = document.getElementById("article");
+  article.innerHTML = "";
+
+  const heading = document.createElement("h2");
+  heading.textContent = topic.content;
+  article.appendChild(heading);
+
+  const category = document.createElement("p");
+  category.textContent = topic.category;
+  article.appendChild(category);
+
+  const button = document.createElement("button");
+  button.className = "bookmark";
+  button.textContent = bookmarks.includes(title)
+    ? "★ Bookmarked" : "☆ Bookmark";
+
+  button.onclick = () => {
+    if (bookmarks.includes(title)) {
+      bookmarks = bookmarks.filter(t => t !== title);
+    } else {
+      bookmarks.push(title);
+    }
+    button.textContent = bookmarks.includes(title)
+      ? "★ Bookmarked" : "☆ Bookmark";
+  };
+
+  article.appendChild(button);
+
+  topic.sections.forEach(section => {
+    const h = document.createElement("h3");
+    h.textContent = section;
+    article.appendChild(h);
+
+    const p = document.createElement("p");
+    p.textContent = "Content will be added from our orthopaedic reference library.";
+    article.appendChild(p);
+  });
+}
+
+function searchTopics() {
+  const query = document.getElementById("search").value.toLowerCase();
+
+  document.getElementById("categories").classList.toggle("hidden", query.length > 0);
+
+  document.getElementById("resultTitle").textContent =
+    query ? "Search Results" : "Sample Topics";
+
+  render(topics.filter(t =>
+    (t.title + " " + t.category + " " + t.description)
+    .toLowerCase().includes(query)
+  ));
+}
+
+function showCategory(category) {
+  document.getElementById("search").value = "";
+  document.getElementById("categories").classList.add("hidden");
+  document.getElementById("resultTitle").textContent = category;
+  render(topics.filter(t => t.category === category));
+}
+
+function showBookmarks() {
+  document.getElementById("home").classList.add("hidden");
+  document.getElementById("reader").classList.add("hidden");
+  document.getElementById("saved").classList.remove("hidden");
+
+  const container = document.getElementById("savedTopics");
+  container.innerHTML = "";
+
+  const list = topics.filter(t => bookmarks.includes(t.title));
+
+  if (!list.length) {
+    container.textContent = "No bookmarks yet.";
+  } else {
+    list.forEach(t => {
+      const div = document.createElement("div");
+      div.className = "topic";
+      div.textContent = t.title;
+      div.onclick = () => openTopic(t.title);
+      container.appendChild(div);
+    });
+  }
+}
+
+function goHome() {
+  document.getElementById("reader").classList.add("hidden");
+  document.getElementById("saved").classList.add("hidden");
+  document.getElementById("home").classList.remove("hidden");
+  document.getElementById("categories").classList.remove("hidden");
+  document.getElementById("search").value = "";
+  document.getElementById("resultTitle").textContent = "Sample Topics";
+  render(topics);
+}
+
+render(topics);
+</script>
+
+</body>
+</html>
