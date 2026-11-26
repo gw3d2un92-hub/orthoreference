@@ -1,0 +1,13 @@
+
+{
+  "name": "OrthoReference - Orthopaedic Clinical Reference",
+  "short_name": "OrthoReference",
+  "description": "Offline orthopaedic clinical reference",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f3f6fa",
+  "theme_color": "#102b46",
+  "categories": ["medical", "education", "health"]
+}
